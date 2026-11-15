@@ -250,9 +250,9 @@
 # mods\contents\<title id>\<name>\romfs\...). Their romfs files replace or add game files; when two mods change the same
 # file, the first by folder name wins. exefs and cheat mods do not apply. Default: mods next to xc3.exe; 0 turns mods off.
 # mods = mods
-# Mod files that replace entries of the game's archives (bf3.arh and the add-ons' bf3_dlc0N.arh), the files emulator
-# mods load through the Skyline plugin xc3-file-loader: 1 = the game reads the mod's file in place of the entry, even a
-# bigger one; 0 = the game keeps its archive entries and only plain RomFS files are replaced. docs/mods.md explains.
+# Mod files that replace files inside the game's archives (bf3.arh and the add-ons' bf3_dlc0N.arh), which emulator
+# mods load through the Skyline plugin xc3-file-loader: 1 = the game reads the mod's file in place of the archived one,
+# a bigger one included; 0 = mods replace only the plain RomFS files (movies and sound banks). docs/mods.md explains.
 # Default: 1.
 # mod_archive = 1
 # Folder of replacement files listed in a manifest.tsv with their SHA-256 (romfs.c, overlay_load). Default: none.

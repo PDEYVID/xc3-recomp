@@ -158,6 +158,8 @@ static const char *const text_en[UI_TEXT_COUNT] = {
     [UI_MENU_OPERATION_MODE] = "Console mode",
     [UI_MENU_OPERATION_MODE_DESC] = "Whether the game thinks it runs docked or handheld.",
     [UI_MENU_MODE_DOCKED] = "Docked", [UI_MENU_MODE_HANDHELD] = "Handheld",
+    [UI_MENU_MOD_ARCHIVE] = "Mods replace archive files",
+    [UI_MENU_MOD_ARCHIVE_DESC] = "Mod files in the mods folder replace the files inside the game's archives (text, fonts, models), as the xc3-file-loader plugin does on an emulator. Off: mods replace only movies and sound banks.",
 
     [UI_MENU_VOLUME] = "Volume", [UI_MENU_VOLUME_DESC] = "Master volume of the game.",
 
@@ -458,6 +460,8 @@ static const char *const text_ru[UI_TEXT_COUNT] = {
     [UI_MENU_OPERATION_MODE] = "Режим консоли",
     [UI_MENU_OPERATION_MODE_DESC] = "Игра считает, что консоль в док-станции или в портативном режиме.",
     [UI_MENU_MODE_DOCKED] = "В док-станции", [UI_MENU_MODE_HANDHELD] = "Портативный",
+    [UI_MENU_MOD_ARCHIVE] = "Моды заменяют файлы архивов",
+    [UI_MENU_MOD_ARCHIVE_DESC] = "Файлы из папки mods заменяют файлы внутри архивов игры (тексты, шрифты, модели), как плагин xc3-file-loader в эмуляторе. Выкл.: моды заменяют только видео и звуковые банки.",
 
     [UI_MENU_VOLUME] = "Громкость", [UI_MENU_VOLUME_DESC] = "Общая громкость игры.",
 

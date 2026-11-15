@@ -191,8 +191,8 @@ void mod_archive_init(void) {
         return;
     }
     if (!rt_patch_enabled(set)) {
-        rt_log("mods: archive overlay off (mod_archive = 0): the game keeps its archive entries; %zu mod files are "
-               "only RomFS files", added);
+        rt_log("mods: archive overlay off (mod_archive = 0): the game keeps its archive entries, and the %zu mod files "
+               "replace only plain RomFS files", added);
         return;
     }
     double t0 = (double)plat_now_ns() / 1e9;

@@ -615,6 +615,7 @@ static void tab_game(float scale) {
     row_game_lang();
     static const UiTextId mode[] = {UI_MENU_MODE_DOCKED, UI_MENU_MODE_HANDHELD};
     opt_choice("XC3_OPERATION_MODE", UI_MENU_OPERATION_MODE, mode, 2, UI_MENU_OPERATION_MODE_DESC);
+    opt_toggle("XC3_MOD_ARCHIVE", UI_MENU_MOD_ARCHIVE, UI_MENU_MOD_ARCHIVE_DESC);
     opt_end();
 }
 

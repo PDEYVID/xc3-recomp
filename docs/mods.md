@@ -25,9 +25,9 @@ for example `romfs\bdat\gb\evt\ev01\msg_ev01010100.bdat`, and needs the Skyline 
 (`exefs\subsdk9`, `exefs\main.npdm`, `romfs\skyline\plugins\libxc3_file_loader.nro`) to make the game read it.
 
 This build does the plugin's work itself, so install such a mod as above and leave its Skyline files where they
-are. `exefs` and `romfs\skyline` are skipped (the log says so). Every file of the mod whose path is an archive entry's
-replaces that entry, in the base game's archive and in the add-ons' alike; a file bigger than the original works. The
-game reads the loose file with its own size, as it does with the plugin.
+are. `exefs` and `romfs\skyline` are skipped (the log says so). Every mod file whose path matches an archive entry
+replaces that entry, in the base game's archive and in the add-ons' alike, and a file bigger than the original works:
+the game reads the loose file with its own size, as it does with the plugin.
 
 How it works: the game looks a path up in its archives first (`ml::DevFileArchiver::getFileInfo`) and only on a miss
 opens the loose file, in `aoc4:` to `aoc1:` and then `rom:`. The patch set `modfiles` (recomp/patches-upd.txt,
@@ -35,8 +35,9 @@ runtime/mod_archive.c) makes the lookup miss for every path a mod adds to the Ro
 console or an emulator. It is part of the generated code: an install made before it needs the lift and compile steps
 again.
 
-`mod_archive = 0` in `xc3.ini` turns this off: the game keeps its archive entries and mods replace only the plain
-RomFS files (movies and sound banks).
+The F1 menu's Game tab has the switch ("Mods replace archive files", after a restart), as does `mod_archive` in
+`xc3.ini`. Off, the game keeps its archive entries and mods replace only the plain RomFS files (movies and sound
+banks).
 
 ## Which mod wins
 
