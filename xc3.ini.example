@@ -188,6 +188,8 @@
 
 [language]
 # Language: a Windows locale such as de-DE, or a Switch code (en-US, ja, zh-Hant, ...). Default: the Windows locale.
+# A language XC3 does not ship (pt-BR) needs a language pack in languages\<code>\ next to xc3.exe (docs/mods.md):
+# the game then runs in the language whose text the pack replaces. Without one, pt-BR plays in Spanish.
 # locale = en-US
 # lang = en-US
 # System mode reported to the game: docked or handheld.

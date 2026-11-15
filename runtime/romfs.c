@@ -25,6 +25,7 @@
 #include "cfg.h"
 #include "fs.h"
 #include "host.h"
+#include "ov.h"
 #include "romfs_config.h"
 #include "romfs_path.h"
 #include "platform/platform.h"
@@ -508,6 +509,17 @@ static void mods_load(void) {
     rt_log("mods: %zu files from %s", noverlay - before, dir);
 }
 
+// The language pack of the game language (ov.h ov_language_pack), after the mods: a mod that replaces one of its files
+// wins, so a fix can be laid over a pack. ov_system.c game_language makes the game run in the language the pack replaces.
+static void language_pack_load(void) {
+    char dir[2100];
+    const char *code = ov_language();
+    if (!ov_language_pack(code, dir, sizeof dir)) return;
+    size_t before = noverlay;
+    mods_find(dir, 4);
+    rt_log("mods: language pack %s: %zu files from %s", code, noverlay - before, dir);
+}
+
 static void overlay_init(void) {
     // XC3_ROMFS_PATCHES unset: romfs-patches next to romfs-index.bin if it has a manifest (tools/make_romfs_patches.py)
     char def[2100];
@@ -521,6 +533,7 @@ static void overlay_init(void) {
     for (int i = 0; i < 2; i++)
         if (dirs[i] && *dirs[i] && strcmp(dirs[i], "0")) overlay_load(dirs[i]);
     mods_load();
+    language_pack_load();
     heapdef_overlay();
     added_init();
     if (noverlay) qsort(overlays, noverlay, sizeof *overlays, overlay_order);

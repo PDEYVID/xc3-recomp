@@ -39,6 +39,27 @@ The F1 menu's Game tab has the switch ("Mods replace archive files", after a res
 `xc3.ini`. Off, the game keeps its archive entries and mods replace only the plain RomFS files (movies and sound
 banks).
 
+## Language packs
+
+A translation into a language XC3 does not ship, such as Brazilian Portuguese, replaces the text of one it does
+(`romfs\bdat\gb\` for English). Installed as a mod it covers English for good. Installed as a language pack it is a
+language of its own, next to the game's:
+
+```
+languages\pt-BR\romfs\...        (the translation mod's folder, as it comes; exefs and skyline are skipped)
+```
+
+Pick it as the game language: Portuguese (Brasil) in the F1 menu's Game tab (it is listed when the pack is there), or
+`lang = pt-BR` in `xc3.ini`. With Windows set to Brazilian Portuguese the automatic choice picks it too. The game then
+runs in the language the pack replaces (English for `bdat\gb\`), with that language's voices and fonts, and reads the
+pack's files in its place; any other language plays without it. A mod that replaces one of the pack's files wins over
+the pack, so fixes to a translation can stay a separate mod. The log names the pack:
+
+```
+oe: language pack pt-BR (...\languages/pt-BR): the game runs in en-GB, whose text the pack replaces
+mods: language pack pt-BR: 4120 files from ...\languages/pt-BR
+```
+
 ## Which mod wins
 
 Mods apply in the order of their folder paths. When two mods have the same file, the first by folder name wins and
