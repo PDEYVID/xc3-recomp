@@ -363,7 +363,9 @@ static void heapdef_overlay(void) {
 // Every folder named romfs under the mods folder (XC3_MODS, default "mods" next to xc3.exe; "0" = off) is one mod, as
 // emulators unpack them: mods/<name>/romfs/..., or deeper (mods/contents/<title id>/<name>/romfs). Its files replace
 // or add RomFS files, with no manifest and no hash check. Mods apply in path order; a file a manifest overlay or an
-// earlier mod already serves is skipped. exefs folders patch ARM code, which this build does not run: skipped.
+// earlier mod already serves is skipped. exefs folders patch ARM code, which this build does not run: skipped. Most
+// game files are entries of the bf3.arh archives, not RomFS files: a mod file with an archive entry's path is added
+// to the RomFS, and mod_archive.c makes the game read it in place of the entry.
 typedef struct { char **paths; size_t n; } PathList;
 
 static void path_push(PathList *l, const char *p) {
@@ -611,6 +613,7 @@ static void init_once(void *param) {
         }
     }
     overlay_init();
+    mod_archive_init();
     rt_log("RomFS ready: %llu files, %zu overlays, %zu added, %.2f s", (unsigned long long)file_count, noverlay,
            nadded, now_s() - t0);
 #endif
@@ -650,6 +653,39 @@ const char *romfs_overlay(size_t k, const char **file, uint64_t *size, int *is_a
     *size = overlays[k].size;
     *is_added = overlays[k].index >= file_count;
     return overlays[k].name;
+}
+
+size_t romfs_added_count(void) { return nadded; }
+
+const char *romfs_added(size_t k, const char **file, uint64_t *size) {
+    if (k >= nadded) return NULL;
+    const Overlay *o = &overlays[overlay_slot(file_count + k) - 1];
+    if (file) *file = o->path;
+    if (size) *size = o->size;
+    return added[k];
+}
+
+int romfs_added_has(const char *p) {
+    size_t k = added_lower(p);
+    return k < nadded && !strcmp(added[k], p);
+}
+
+uint8_t *romfs_read_original(const char *p, uint64_t *size) {
+    uint64_t i = lower(p);
+    if (i >= file_count || strcmp(entry_name(entry(i)), p)) return NULL;
+    Entry e = entry(i);
+    uint8_t *b = e.size <= (256u << 20) ? malloc(e.size ? (size_t)e.size : 1) : NULL;
+    for (uint64_t done = 0; b && done < e.size;) {
+        uint32_t chunk = e.size - done > READ_CHUNK ? READ_CHUNK : (uint32_t)(e.size - done);
+        int64_t r = read_at(image, b + done, chunk, e.offset + done);
+        if (r <= 0) {
+            free(b);
+            return NULL;
+        }
+        done += (uint64_t)r;
+    }
+    if (b) *size = e.size;
+    return b;
 }
 
 int romfs_owns(const char *path) {
