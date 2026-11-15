@@ -412,7 +412,15 @@ static int served(uint64_t i, const char *name) {
     return 0;
 }
 
-// Adds the files under dir (romfs-relative prefix rel) of one mod; counts into *used and *skipped.
+// The game asks for lower-case paths (every RomFS and archive path is lower case): a mod file named in another case
+// is served under its lower-case path, as the emulators' case-insensitive file systems do.
+static void lower_case(char *s) {
+    for (; *s; s++)
+        if (*s >= 'A' && *s <= 'Z') *s = (char)(*s - 'A' + 'a');
+}
+
+// Adds the files under dir (romfs-relative prefix rel) of one mod; counts into *used and *skipped. The top-level
+// skyline folder holds Skyline plugins (xc3-file-loader among them), Switch code this build does not run: skipped.
 static void mod_files(const char *dir, const char *rel, size_t *used, size_t *skipped) {
     Listing l = list_dir(dir);
     char name[4200];
@@ -421,6 +429,7 @@ static void mod_files(const char *dir, const char *rel, size_t *used, size_t *sk
         if (snprintf(name, sizeof name, "%s%s", rel, base_name(file)) >= (int)sizeof name ||
             !romfs_path_valid_relative(name))
             continue;
+        lower_case(name);
         uint64_t i = lower(name);
         if (!(i < file_count && !strcmp(entry_name(entry(i)), name))) i = ADDED;
         if (served(i, name)) {
@@ -446,8 +455,15 @@ static void mod_files(const char *dir, const char *rel, size_t *used, size_t *sk
         ++*used;
     }
     for (size_t k = 0; k < l.dirs.n; k++) {
-        if (snprintf(name, sizeof name, "%s%s/", rel, base_name(l.dirs.paths[k])) < (int)sizeof name)
+        if (!*rel && !strcasecmp(base_name(l.dirs.paths[k]), "skyline")) {
+            rt_log("mods: %s skipped: Skyline plugins patch the Switch code, which this build replaces",
+                   l.dirs.paths[k]);
+            continue;
+        }
+        if (snprintf(name, sizeof name, "%s%s/", rel, base_name(l.dirs.paths[k])) < (int)sizeof name) {
+            lower_case(name);
             mod_files(l.dirs.paths[k], name, used, skipped);
+        }
     }
     list_free(&l.dirs);
     list_free(&l.files);
